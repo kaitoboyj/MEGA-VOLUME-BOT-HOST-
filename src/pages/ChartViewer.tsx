@@ -44,7 +44,7 @@ export default function ChartViewer() {
         {data && <div className="space-y-6">
             <TokenInfo tokenInfo={data.tokenInfo} />
 
-            {data.isMigrated ? <Tabs defaultValue="iframe" className="w-full">
+            {data.isMigrated && data.pair ? <Tabs defaultValue="iframe" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="iframe">DexScreener Embed</TabsTrigger>
                   <TabsTrigger value="api">DexScreener API Chart</TabsTrigger>
