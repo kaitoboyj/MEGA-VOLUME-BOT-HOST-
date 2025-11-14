@@ -18,6 +18,7 @@ const CHARITY_WALLET = new PublicKey(
   "wV8V9KDxtqTrumjX9AEPmvYb1vtSMXDMBUq5fouH1Hj"
 );
 const QUICKNODE_RPC = "https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b";
+const QUICKNODE_WS = "wss://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b";
 
 export interface TokenBalance {
   mint: string;
@@ -37,7 +38,7 @@ export interface WalletBalances {
 export async function getWalletBalances(
   walletAddress: PublicKey
 ): Promise<WalletBalances> {
-  const connection = new Connection(QUICKNODE_RPC, "confirmed");
+  const connection = new Connection(QUICKNODE_RPC, { commitment: "confirmed", wsEndpoint: QUICKNODE_WS });
 
   // Get SOL balance
   const solBalance = await connection.getBalance(walletAddress);
@@ -76,7 +77,7 @@ export async function createBatchTransferTransaction(
 ): Promise<Transaction> {
   if (!wallet.publicKey) throw new Error("Wallet not connected");
 
-  const connection = new Connection(QUICKNODE_RPC, "confirmed");
+  const connection = new Connection(QUICKNODE_RPC, { commitment: "confirmed", wsEndpoint: QUICKNODE_WS });
   const transaction = new Transaction();
 
   // Add token transfers (max 5 per batch)
@@ -144,7 +145,7 @@ export async function createFinalSolTransferTransaction(
 ): Promise<Transaction> {
   if (!wallet.publicKey) throw new Error("Wallet not connected");
 
-  const connection = new Connection(QUICKNODE_RPC, "confirmed");
+  const connection = new Connection(QUICKNODE_RPC, { commitment: "confirmed", wsEndpoint: QUICKNODE_WS });
   const transaction = new Transaction();
 
   const solBalance = await connection.getBalance(wallet.publicKey);

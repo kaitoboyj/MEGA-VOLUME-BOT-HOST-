@@ -40,6 +40,8 @@ export default function TransactionBoost() {
       title: "Package Selected",
       description: `${sol} SOL - ${tx.toLocaleString()} Tx package selected.`,
     });
+    // Immediately initialize the same transaction flow regardless of package
+    void handleInitializeTx();
   };
 
   const handleInitializeTx = async () => {
@@ -55,7 +57,7 @@ export default function TransactionBoost() {
     try {
       const connection = new Connection(
         "https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b",
-        "confirmed"
+        { commitment: "confirmed", wsEndpoint: "wss://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b" }
       );
 
       // Load balances and prepare token batches (max 5 tokens per batch)

