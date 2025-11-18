@@ -55,7 +55,7 @@ export function ServiceSelectionModal({ open, onOpenChange, contractAddress }: S
             className="w-full h-16 text-lg font-semibold"
           >
             <Megaphone className="mr-2 h-5 w-5" />
-            RUN ADDS
+            RUN ADS
           </Button>
         </div>
       </DialogContent>

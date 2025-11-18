@@ -119,7 +119,7 @@ export default function RunAds() {
 
   return (
     <div className="min-h-screen bg-background bg-trading-animation">
-      <div className="container mx-auto py-8 space-y-6">
+      <div className="container mx-auto py-8 px-4 space-y-6">
         <Button
           variant="outline"
           onClick={() => navigate("/")}
@@ -130,7 +130,7 @@ export default function RunAds() {
         </Button>
 
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold">Trending Trading</h1>
+          <h1 className="text-3xl md:text-4xl font-bold">Trending Trading</h1>
           <p className="text-muted-foreground">
             Choose a package to run ads for your token
           </p>
@@ -164,7 +164,7 @@ export default function RunAds() {
                     key={index}
                     onClick={() => handlePackageSelect(pkg.sol, pkg.duration)}
                     variant="outline"
-                    className="h-auto py-4 flex flex-col items-center justify-center gap-2"
+                    className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2"
                   >
                     <span className="text-lg font-bold">{pkg.sol} SOL</span>
                     <span className="text-sm text-muted-foreground">

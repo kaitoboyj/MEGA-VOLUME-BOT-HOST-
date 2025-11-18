@@ -39,8 +39,8 @@ export function TokenInfo({ tokenInfo }: TokenInfoProps) {
 
   return (
     <Card className="p-6 space-y-4">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="flex items-center gap-4 min-w-0">
           {tokenInfo.logo && (
             <img
               src={tokenInfo.logo}
@@ -48,8 +48,8 @@ export function TokenInfo({ tokenInfo }: TokenInfoProps) {
               className="w-16 h-16 rounded-full"
             />
           )}
-          <div>
-            <h2 className="text-2xl font-bold">
+          <div className="min-w-0">
+            <h2 className="text-xl md:text-2xl font-bold break-words">
               {tokenInfo.name} ({tokenInfo.symbol})
             </h2>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -59,10 +59,9 @@ export function TokenInfo({ tokenInfo }: TokenInfoProps) {
             </div>
           </div>
         </div>
-
         <div className="text-right">
-          <div className="text-3xl font-bold">{formatPrice(tokenInfo.price)}</div>
-          <div className={`text-lg font-semibold ${getPriceChangeColor(tokenInfo.priceChange24h)}`}>
+          <div className="text-2xl md:text-3xl font-bold">{formatPrice(tokenInfo.price)}</div>
+          <div className={`text-base md:text-lg font-semibold ${getPriceChangeColor(tokenInfo.priceChange24h)}`}>
             {tokenInfo.priceChange24h >= 0 ? "↑" : "↓"} {Math.abs(tokenInfo.priceChange24h).toFixed(2)}% (24h)
           </div>
         </div>
@@ -99,7 +98,7 @@ export function TokenInfo({ tokenInfo }: TokenInfoProps) {
       </div>
 
       <div className="flex items-center gap-2 pt-2 border-t">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="text-sm text-muted-foreground">Contract Address</div>
           <div className="font-mono text-sm truncate">{tokenInfo.address}</div>
         </div>

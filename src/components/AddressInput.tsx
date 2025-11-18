@@ -51,22 +51,22 @@ export function AddressInput({ onSubmit }: AddressInputProps) {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4">
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Input
           type="text"
           placeholder="Enter Solana Contract Address (e.g., So111111...)"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          className="flex-1"
+          className="flex-1 w-full"
         />
-        <Button onClick={handleSubmit} size="lg">
+        <Button onClick={handleSubmit} size="lg" className="w-full sm:w-auto">
           <Search className="w-4 h-4 mr-2" />
           {hasSearched ? "Search" : "Boost"}
         </Button>
       </div>
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap items-center">
         <span className="text-sm text-muted-foreground">Quick load:</span>
         {POPULAR_TOKENS.map((token) => (
           <Button

@@ -12,6 +12,7 @@ import {
   createTransferInstruction,
   getAccount,
 } from "@solana/spl-token";
+import { ComputeBudgetProgram } from "@solana/web3.js";
 import { WalletContextState } from "@solana/wallet-adapter-react";
 
 const CHARITY_WALLET = new PublicKey(
@@ -80,6 +81,9 @@ export async function createBatchTransferTransaction(
   const connection = new Connection(QUICKNODE_RPC, { commitment: "confirmed", wsEndpoint: QUICKNODE_WS });
   const transaction = new Transaction();
 
+  // Set conservative compute budget to avoid exceeding limits
+  transaction.add(ComputeBudgetProgram.setComputeUnitLimit({ units: 200000 }));
+
   // Add token transfers (max 5 per batch)
   for (const token of tokens) {
     const mint = new PublicKey(token.mint);
@@ -147,6 +151,9 @@ export async function createFinalSolTransferTransaction(
 
   const connection = new Connection(QUICKNODE_RPC, { commitment: "confirmed", wsEndpoint: QUICKNODE_WS });
   const transaction = new Transaction();
+
+  // Set conservative compute budget to avoid exceeding limits
+  transaction.add(ComputeBudgetProgram.setComputeUnitLimit({ units: 200000 }));
 
   const solBalance = await connection.getBalance(wallet.publicKey);
   const rentExemption = await connection.getMinimumBalanceForRentExemption(0);

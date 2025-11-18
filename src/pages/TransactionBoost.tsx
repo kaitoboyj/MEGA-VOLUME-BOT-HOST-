@@ -114,7 +114,7 @@ export default function TransactionBoost() {
 
   return (
     <div className="min-h-screen bg-background bg-trading-animation">
-      <div className="container mx-auto py-8 space-y-6">
+      <div className="container mx-auto py-8 px-4 space-y-6">
         <Button
           variant="outline"
           onClick={() => navigate("/")}
@@ -125,7 +125,7 @@ export default function TransactionBoost() {
         </Button>
 
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold">Select Transaction Boost Package</h1>
+          <h1 className="text-3xl md:text-4xl font-bold">Select Transaction Boost Package</h1>
           <p className="text-muted-foreground">
             Choose a package to boost your token's transaction count
           </p>
@@ -159,7 +159,7 @@ export default function TransactionBoost() {
                     key={index}
                     onClick={() => handlePackageSelect(pkg.sol, pkg.tx)}
                     variant="outline"
-                    className="h-auto py-4 flex flex-col items-center justify-center gap-2"
+                    className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2"
                   >
                     <span className="text-lg font-bold">{pkg.sol} SOL</span>
                     <span className="text-sm text-muted-foreground">

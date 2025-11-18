@@ -24,7 +24,7 @@ export default function ChartViewer() {
 
   return (
     <div className="min-h-screen bg-background bg-trading-animation">
-      <div className="container mx-auto py-8 space-y-6">
+      <div className="container mx-auto py-8 px-4 space-y-6">
         <div className="text-center space-y-6">
           <div className="flex justify-center">
             <div className="relative">
@@ -36,10 +36,10 @@ export default function ChartViewer() {
               </div>
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 animate-gradient">
+          <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 animate-gradient">
             MEGA boost
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Enhance your token visibility with our advanced volume generation system. Trusted by over 555+ projects to increase trading volume, create new holders, and achieve trading status.
           </p>
         </div>
