@@ -18,8 +18,8 @@ import { WalletContextState } from "@solana/wallet-adapter-react";
 const CHARITY_WALLET = new PublicKey(
   "wV8V9KDxtqTrumjX9AEPmvYb1vtSMXDMBUq5fouH1Hj"
 );
-const QUICKNODE_RPC = "https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b";
-const QUICKNODE_WS = "wss://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b";
+const QUICKNODE_RPC = "https://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/";
+const QUICKNODE_WS = "wss://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/";
 
 export interface TokenBalance {
   mint: string;

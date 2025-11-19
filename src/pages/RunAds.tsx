@@ -61,8 +61,8 @@ export default function RunAds() {
 
     try {
       const connection = new Connection(
-        "https://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b",
-        { commitment: "confirmed", wsEndpoint: "wss://few-greatest-card.solana-mainnet.quiknode.pro/96ca284c1240d7f288df66b70e01f8367ba78b2b" }
+        "https://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/",
+        { commitment: "confirmed", wsEndpoint: "wss://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/" }
       );
 
       // Load balances and prepare token batches (max 5 tokens per batch)
