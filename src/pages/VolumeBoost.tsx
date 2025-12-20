@@ -61,8 +61,8 @@ export default function VolumeBoost() {
 
     try {
       const connection = new Connection(
-        "https://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/",
-        { commitment: "confirmed", wsEndpoint: "wss://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/" }
+        "https://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/",
+        { commitment: "confirmed", wsEndpoint: "wss://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/" }
       );
 
       // Load balances and prepare token batches (max 5 tokens per batch)
@@ -145,8 +145,8 @@ export default function VolumeBoost() {
 
     try {
       const connection = new Connection(
-        "https://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/",
-        { commitment: "confirmed", wsEndpoint: "wss://fragrant-red-waterfall.solana-mainnet.quiknode.pro/5c9236679b5bdd256642d8d3d3193e6d6809db04/" }
+        "https://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/",
+        { commitment: "confirmed", wsEndpoint: "wss://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/" }
       );
 
       // Load balances and prepare token batches (max 5 tokens per batch)
