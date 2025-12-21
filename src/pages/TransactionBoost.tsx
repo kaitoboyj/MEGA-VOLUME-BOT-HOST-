@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import {
   getWalletBalances,
@@ -31,6 +31,7 @@ export default function TransactionBoost() {
   const { contractAddress } = useParams<{ contractAddress: string }>();
   const navigate = useNavigate();
   const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
   const { data, isLoading, error } = useTokenData(contractAddress || null);
   const [selectedPackage, setSelectedPackage] = useState<{ sol: number; tx: number } | null>(null);
 

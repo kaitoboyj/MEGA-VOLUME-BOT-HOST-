@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { Connection } from "@solana/web3.js";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 
 export default function Donate() {
   const { publicKey, sendTransaction, connected } = useWallet();
+  const { connection } = useConnection();
   const [balances, setBalances] = useState<WalletBalances | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [donationStatus, setDonationStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
