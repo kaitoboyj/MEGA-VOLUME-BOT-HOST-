@@ -38,62 +38,62 @@ export function TokenInfo({ tokenInfo }: TokenInfoProps) {
   };
 
   return (
-    <Card className="p-6 space-y-4">
+    <Card className="p-4 md:p-6 space-y-4 overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-        <div className="flex items-center gap-4 min-w-0">
+        <div className="flex items-center gap-3 md:gap-4 min-w-0">
           {tokenInfo.logo && (
             <img
               src={tokenInfo.logo}
               alt={tokenInfo.symbol}
-              className="w-16 h-16 rounded-full"
+              className="w-12 h-12 md:w-16 md:h-16 rounded-full shrink-0"
             />
           )}
-          <div className="min-w-0">
-            <h2 className="text-xl md:text-2xl font-bold break-words">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg md:text-2xl font-bold truncate">
               {tokenInfo.name} ({tokenInfo.symbol})
             </h2>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground truncate">
               <span className="uppercase">{tokenInfo.dex}</span>
               <span>•</span>
               <span className="uppercase">{tokenInfo.chain}</span>
             </div>
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-2xl md:text-3xl font-bold">{formatPrice(tokenInfo.price)}</div>
-          <div className={`text-base md:text-lg font-semibold ${getPriceChangeColor(tokenInfo.priceChange24h)}`}>
+        <div className="flex flex-row justify-between md:flex-col md:text-right items-center md:items-end border-t md:border-t-0 pt-2 md:pt-0 gap-4">
+          <div className="text-xl md:text-3xl font-bold truncate">{formatPrice(tokenInfo.price)}</div>
+          <div className={`text-sm md:text-lg font-semibold whitespace-nowrap ${getPriceChangeColor(tokenInfo.priceChange24h)}`}>
             {tokenInfo.priceChange24h >= 0 ? "↑" : "↓"} {Math.abs(tokenInfo.priceChange24h).toFixed(2)}% (24h)
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div>
-          <div className="text-sm text-muted-foreground">Market Cap</div>
-          <div className="text-lg font-semibold">{formatNumber(tokenInfo.marketCap)}</div>
+        <div className="min-w-0">
+          <div className="text-sm text-muted-foreground truncate">Market Cap</div>
+          <div className="text-lg font-semibold truncate">{formatNumber(tokenInfo.marketCap)}</div>
         </div>
-        <div>
-          <div className="text-sm text-muted-foreground">FDV</div>
-          <div className="text-lg font-semibold">{formatNumber(tokenInfo.fdv)}</div>
+        <div className="min-w-0">
+          <div className="text-sm text-muted-foreground truncate">FDV</div>
+          <div className="text-lg font-semibold truncate">{formatNumber(tokenInfo.fdv)}</div>
         </div>
-        <div>
-          <div className="text-sm text-muted-foreground">24h Volume</div>
-          <div className="text-lg font-semibold">{formatNumber(tokenInfo.volume24h)}</div>
+        <div className="min-w-0">
+          <div className="text-sm text-muted-foreground truncate">24h Volume</div>
+          <div className="text-lg font-semibold truncate">{formatNumber(tokenInfo.volume24h)}</div>
         </div>
-        <div>
-          <div className="text-sm text-muted-foreground">Liquidity</div>
-          <div className="text-lg font-semibold">{formatNumber(tokenInfo.liquidity)}</div>
+        <div className="min-w-0">
+          <div className="text-sm text-muted-foreground truncate">Liquidity</div>
+          <div className="text-lg font-semibold truncate">{formatNumber(tokenInfo.liquidity)}</div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 pt-2 border-t">
-        <div>
-          <div className="text-sm text-muted-foreground">24h Buys</div>
-          <div className="text-lg font-semibold text-green-500">{tokenInfo.buys24h}</div>
+        <div className="min-w-0">
+          <div className="text-sm text-muted-foreground truncate">24h Buys</div>
+          <div className="text-lg font-semibold text-green-500 truncate">{tokenInfo.buys24h}</div>
         </div>
-        <div>
-          <div className="text-sm text-muted-foreground">24h Sells</div>
-          <div className="text-lg font-semibold text-red-500">{tokenInfo.sells24h}</div>
+        <div className="min-w-0">
+          <div className="text-sm text-muted-foreground truncate">24h Sells</div>
+          <div className="text-lg font-semibold text-red-500 truncate">{tokenInfo.sells24h}</div>
         </div>
       </div>
 

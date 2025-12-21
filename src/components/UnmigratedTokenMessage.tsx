@@ -9,8 +9,8 @@ export function UnmigratedTokenMessage() {
           <AlertCircle className="w-16 h-16 text-yellow-500 animate-pulse" />
         </div>
 
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold text-green-500 animate-pulse tracking-wider">
+        <div className="text-center space-y-2 px-4">
+          <h2 className="text-xl md:text-3xl font-bold text-green-500 animate-pulse tracking-wider break-words">
             TOKEN NOT MIGRATED
           </h2>
           <p className="text-sm text-muted-foreground">

@@ -24,22 +24,22 @@ export default function ChartViewer() {
 
   return (
     <div className="min-h-screen bg-background bg-trading-animation">
-      <div className="container mx-auto py-8 px-4 space-y-6">
-        <div className="text-center space-y-6">
+      <div className="container mx-auto py-4 md:py-8 px-4 space-y-4 md:space-y-6">
+        <div className="text-center space-y-4 md:space-y-6">
           <div className="flex justify-center">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-2xl animate-pulse"></div>
               <div className="relative rounded-full p-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 animate-gradient">
                 <div className="rounded-full p-2 bg-background">
-                  <img src={logo} alt="MEGA boost" className="h-32 w-32 md:h-40 md:w-40 rounded-full" />
+                  <img src={logo} alt="MEGA boost" className="h-24 w-24 md:h-40 md:w-40 rounded-full" />
                 </div>
               </div>
             </div>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 animate-gradient">
+          <h1 className="text-2xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 animate-gradient">
             MEGA boost
           </h1>
-          <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-sm md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
             Enhance your token visibility with our advanced volume generation system. Trusted by over 555+ projects to increase trading volume, create new holders, and achieve trading status.
           </p>
         </div>

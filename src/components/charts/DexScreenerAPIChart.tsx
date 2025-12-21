@@ -101,16 +101,17 @@ export function DexScreenerAPIChart({ pair }: DexScreenerAPIChartProps) {
   ];
 
   return (
-    <Card className="p-6 space-y-4">
-      <div className="flex items-center justify-between">
+    <Card className="p-4 md:p-6 space-y-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h3 className="text-lg font-semibold">Price Chart (API Data)</h3>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {TIMEFRAMES.map((tf) => (
             <Button
               key={tf.key}
               variant={selectedTimeframe === tf.key ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedTimeframe(tf.key)}
+              className="flex-1 sm:flex-none"
             >
               {tf.label}
             </Button>
