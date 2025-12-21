@@ -35,6 +35,7 @@ export default function RunAds() {
   const { contractAddress } = useParams<{ contractAddress: string }>();
   const navigate = useNavigate();
   const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
   const { data, isLoading, error } = useTokenData(contractAddress || null);
   const [selectedPackage, setSelectedPackage] = useState<{ sol: number; duration: string } | null>(null);
   const [projectDescription, setProjectDescription] = useState("");

